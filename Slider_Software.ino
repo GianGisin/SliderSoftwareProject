@@ -43,6 +43,7 @@ int stepsForLength = 0;
 void setup() {
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
+  pinMode(potentioPower, OUTPUT);
   digitalWrite(potentioPower, HIGH);
   
   Serial.begin(9600);
@@ -62,36 +63,39 @@ void loop() {
   delay(delayBetweenRuns);
   
   for(int i = 0; i <= stepsForLength; i++){
-    digitalWrite(stepPin, HIGH);
+    
     
     Serial.println(analogRead(potentioPin) * 2);
+    
     
     if (analogRead(potentioPin)* 2 >= 1000){
         value = analogRead(potentioPin);
         
         if(value >= 1200){
-          value = 20;
+          value = 20000;
           timeLapse = true;
           
         }else{
-          value = 10;
+          value = 10000;
           timeLapse = true;
         }
         
     }else{
       timeLapse = false;
-      value += 700;
+      value = analogRead(potentioPin * 2) + 700;
     }
     
-    if(!timeLapse){
-      delayMicroseconds(value);
+    digitalWrite(stepPin, HIGH);
+    
+    if(timeLapse){
+      delay(value);
       digitalWrite(stepPin, LOW);
-      delayMicroseconds(value);
+      delay(value);
       
     }else{
-      delay(value);
+      delayMicroseconds(value);
       digitalWrite(stepPin, LOW);
-      delay(value);
+      delayMicroseconds(value);
     }
   } 
 }
